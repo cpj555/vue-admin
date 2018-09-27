@@ -1,16 +1,17 @@
+import store2 from 'store2'
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { setToken, getToken } from '@/utils/store2'
 
 const user = {
   state: {
-    user: '',
+    user: store2.session.get('info'),
     status: '',
     code: '',
     token: getToken(),
-    name: '',
-    avatar: '',
+    name: store2.session.get('info') ? store2.session.get('info').account : '',
+    avatar: store2.session.get('info') ? store2.session.get('info').avatar : '',
     introduction: '',
-    roles: [],
+    roles: store2.session.get('menu'),
     setting: {
       articlePlatform: []
     }
@@ -46,12 +47,16 @@ const user = {
   actions: {
     // 用户名登录
     LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+        loginByUsername(userInfo.username.trim(), userInfo.password).then(response => {
+          commit('SET_TOKEN', response.data['access-token'])
+          commit('SET_ROLES', response.data.menu)
+          commit('SET_NAME', response.data.info.account)
+          commit('SET_AVATAR', response.data.info.avatar)
+
+          setToken(response.data['access-token'])
+          store2.session.set('menu', response.data.menu)
+          store2.session.set('info', response.data.info)
           resolve()
         }).catch(error => {
           reject(error)
@@ -104,7 +109,7 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
-          removeToken()
+          store2.session.clearAll()
           resolve()
         }).catch(error => {
           reject(error)
@@ -116,7 +121,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
-        removeToken()
+        store2.session.clearAll()
         resolve()
       })
     },
@@ -125,7 +130,6 @@ const user = {
     ChangeRoles({ commit }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
-        setToken(role)
         getUserInfo(role).then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)

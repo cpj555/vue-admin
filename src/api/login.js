@@ -2,11 +2,11 @@ import request from '@/utils/request'
 
 export function loginByUsername(username, password) {
   const data = {
-    username,
-    password
+    account: username,
+    password: password
   }
   return request({
-    url: '/login/login',
+    url: '/auth/login',
     method: 'post',
     data
   })

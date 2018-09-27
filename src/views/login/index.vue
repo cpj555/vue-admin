@@ -88,7 +88,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '1111111'
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -112,16 +112,14 @@ export default {
   created() {
     // window.addEventListener('hashchange', this.afterQRScan)
   },
+  mounted() {
+  },
   destroyed() {
     // window.removeEventListener('hashchange', this.afterQRScan)
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+      this.passwordType === 'password' ? this.passwordType = '' : this.passwordType = 'password'
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -129,8 +127,11 @@ export default {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
             this.loading = false
+            console.log(1234)
+            this.$store.dispatch('GenerateRoutes')
             this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
+          }).catch((err) => {
+            console.log(err)
             this.loading = false
           })
         } else {

@@ -9,7 +9,14 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api/dashboard': {
+        target: 'https://www.losingbattle.site',
+        changeOrigin: true,
+        pathRewrite: {
+        }
+      },
+    },
 
     // Various Dev Server settings
 
