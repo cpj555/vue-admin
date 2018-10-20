@@ -2,17 +2,16 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/article/list',
+    url: '/log',
     method: 'get',
     params: query
   })
 }
 
-export function fetchArticle(id) {
+export function fetchTrace(id) {
   return request({
-    url: '/article/detail',
-    method: 'get',
-    params: { id }
+    url: '/log/' + id,
+    method: 'get'
   })
 }
 

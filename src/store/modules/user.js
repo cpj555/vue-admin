@@ -1,5 +1,6 @@
 import store2 from 'store2'
-import { loginByUsername, logout, getUserInfo } from '@/api/login'
+import { loginByUsername, logout } from '@/api/login'
+import { getUserInfo } from '@/api/info'
 import { setToken, getToken } from '@/utils/store2'
 
 const user = {
@@ -65,23 +66,11 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    GetUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
-            reject('error')
-          }
-          const data = response.data
-
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+        getUserInfo().then(response => {
+          commit('SET_NAME', response.data.account)
+          commit('SET_AVATAR', response.data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)

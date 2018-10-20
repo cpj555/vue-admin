@@ -17,19 +17,19 @@ import nestedRouter from './modules/nested'
  **/
 
 /**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                it will becomes nested mode, otherwise not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
     roles: ['admin','editor']     will control the page roles (you can set multiple roles)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar,
     noCache: true                if true ,the page will no be cached(default is false)
   }
-**/
+ **/
 export const constantRouterMap = [
   {
     path: '/redirect',
@@ -44,6 +44,9 @@ export const constantRouterMap = [
   },
   {
     path: '/login',
+    meta: {
+      title: '后台管理系统'
+    },
     component: () => import('@/views/login/index'),
     hidden: true
   },
@@ -135,7 +138,19 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/member_manage/index'),
+  //       name: 'member_manage',
+  //       meta: { title: 'icons', icon: 'people', noCache: true }
+  //     }
+  //   ]
+  // },
+  // member_manage
   {
     path: '/icon',
     component: Layout,
@@ -221,20 +236,6 @@ export const asyncRouterMap = [
         component: () => import('@/views/errorPage/404'),
         name: 'Page404',
         meta: { title: 'page404', noCache: true }
-      }
-    ]
-  },
-
-  {
-    path: '/error-log',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'log',
-        component: () => import('@/views/errorLog/index'),
-        name: 'ErrorLog',
-        meta: { title: 'errorLog', icon: 'bug' }
       }
     ]
   },
@@ -326,23 +327,13 @@ export const asyncRouterMap = [
       }
     ]
   },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'externalLink', icon: 'link' }
-      }
-    ]
-  },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
+
+// console.log(constantRouterMap.concat(asyncRouterMap))
 
 export default new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
+  routes: constantRouterMap.concat(asyncRouterMap)
 })

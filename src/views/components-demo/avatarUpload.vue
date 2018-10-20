@@ -1,49 +1,40 @@
 <template>
   <div class="components-container">
-    <code>This is based on
-      <a class="link-type" href="//github.com/dai-siki/vue-image-crop-upload"> vue-image-crop-upload</a>.
-      {{ $t('components.imageUploadTips') }}
-    </code>
+    <imgInputer v-model="file" accept="image/*" no-mask img-src="http://7xntdk.com1.z0.glb.clouddn.com/12.jpg" @onChange="fileChange"/>
+    <h1><code>no-mask</code></h1>
 
-    <pan-thumb :image="image"/>
-
-    <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px;" @click="imagecropperShow=true">Change Avatar
-    </el-button>
-
-    <image-cropper
-      v-show="imagecropperShow"
-      :width="300"
-      :height="300"
-      :key="imagecropperKey"
-      url="https://httpbin.org/post"
-      lang-type="en"
-      @close="close"
-      @crop-upload-success="cropSuccess"/>
   </div>
 </template>
 
 <script>
-import ImageCropper from '@/components/ImageCropper'
-import PanThumb from '@/components/PanThumb'
+import { getToken } from '@/utils/store2'
+import ImgInputer from 'vue-img-inputer'
+import 'vue-img-inputer/dist/index.css'
 
 export default {
   name: 'AvatarUploadDemo',
-  components: { ImageCropper, PanThumb },
+  components: { ImgInputer },
   data() {
     return {
       imagecropperShow: false,
       imagecropperKey: 0,
-      image: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191'
+      image: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191',
+      show: true,
+      file: undefined,
+      headers: {
+        'Access-Token': getToken()
+      },
+      imgDataUrl: '' // the datebase64 url of created image
     }
   },
   methods: {
-    cropSuccess(resData) {
-      this.imagecropperShow = false
-      this.imagecropperKey = this.imagecropperKey + 1
-      this.image = resData.files.avatar
+    fileChange(file, name) {
+      console.log('File --> ', file)
+      console.log('FileName -->', name)
     },
-    close() {
-      this.imagecropperShow = false
+    onErr(err, file) {
+      console.log('​onErr -> file', file)
+      console.log('​onErr -> err', err)
     }
   }
 }

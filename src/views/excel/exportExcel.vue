@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/log'
 import { parseTime } from '@/utils'
 
 export default {

@@ -79,7 +79,7 @@ import Upload from '@/components/Upload/singleImage3'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { validateURL } from '@/utils/validate'
-import { fetchArticle } from '@/api/article'
+import { upload } from '@/api/upload'
 import { userSearch } from '@/api/remoteSearch'
 import Warning from './Warning'
 import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
@@ -161,7 +161,7 @@ export default {
   },
   methods: {
     fetchData(id) {
-      fetchArticle(id).then(response => {
+      upload(id).then(response => {
         this.postForm = response.data
         // Just for test
         this.postForm.title += `   Article Id:${this.postForm.id}`

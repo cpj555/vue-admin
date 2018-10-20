@@ -65,6 +65,7 @@ export default {
   },
   navbar: {
     logOut: 'Log Out',
+    info: 'Info',
     dashboard: 'Dashboard',
     github: 'Github',
     screenfull: 'Screenfull',

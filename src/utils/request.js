@@ -1,9 +1,8 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/store2'
 import qs from 'qs'
-
+import router from '@/router'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
@@ -20,9 +19,7 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // Do something before request is sent
-    if (store.getters.token) {
-      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    if (getToken()) {
       config.headers['Access-Token'] = getToken()
     }
     return config
@@ -44,6 +41,11 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+      if (res.code === 2004) {
+        console.log(1234)
+        router.replace('/')
+        // this.$router.push('/');
+      }
       return Promise.reject('error')
     } else {
       return response.data

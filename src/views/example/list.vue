@@ -4,57 +4,66 @@
     <el-table v-loading.body="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <span>{{ scope.row.slId }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="Date">
+      <el-table-column width="400px" align="center" label="文件">
         <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.file }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="Author">
+      <el-table-column class-name="status-col" label="行数" width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.line }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="Importance">
+      <el-table-column width="170px" align="center" label="日期">
         <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon"/>
+          <span>{{ scope.row.recordTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="Status" width="110">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
+      <!--<el-table-column width="100px" label="Importance">-->
+      <!--<template slot-scope="scope">-->
+      <!--<svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon"/>-->
+      <!--</template>-->
+      <!--</el-table-column>-->
 
-      <el-table-column min-width="300px" label="Title">
-        <template slot-scope="scope">
+      <!--<el-table-column class-name="status-col" label="Status" width="110">-->
+      <!--<template slot-scope="scope">-->
+      <!--<el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>-->
+      <!--</template>-->
+      <!--</el-table-column>-->
 
-          <router-link :to="'/example/edit/'+scope.row.id" class="link-type">
-            <span>{{ scope.row.title }}</span>
-          </router-link>
-        </template>
-      </el-table-column>
+      <!--<el-table-column min-width="300px" label="Title">-->
+      <!--<template slot-scope="scope">-->
+
+      <!--<router-link :to="'/example/edit/'+scope.row.id" class="link-type">-->
+      <!--<span>{{ scope.row.title }}</span>-->
+      <!--</router-link>-->
+      <!--</template>-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
-          <router-link :to="'/example/edit/'+scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">Edit</el-button>
-          </router-link>
+          <el-button type="danger" size="small" icon="el-icon-question" @click="getTrace(scope.row.slId)">Trace</el-button>
         </template>
       </el-table-column>
     </el-table>
 
+    <el-dialog :visible.sync="dialogTableVisible" title="Trace">
+      <span v-html="trace"/>
+    </el-dialog>
+
     <div class="pagination-container">
       <el-pagination
         :current-page="listQuery.page"
-        :page-sizes="[10,20,30, 50]"
+        :page-sizes="[15,30,50]"
         :page-size="listQuery.limit"
+        :page-count="page_count"
         :total="total"
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -63,10 +72,11 @@
     </div>
 
   </div>
+
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList, fetchTrace } from '@/api/log'
 
 export default {
   name: 'ArticleList',
@@ -83,12 +93,15 @@ export default {
   data() {
     return {
       list: null,
+      trace: null,
+      page_count: 0,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 10
-      }
+        limit: 15
+      },
+      dialogTableVisible: false
     }
   },
   created() {
@@ -98,9 +111,16 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data.list
+        this.page_count = response.data.totalPage
+        this.total = response.data.count
         this.listLoading = false
+      })
+    },
+    getTrace(id) {
+      this.dialogTableVisible = true
+      fetchTrace(id).then(response => {
+        this.trace = response.data.trace.replace(/\n/g, '<br/>')
       })
     },
     handleSizeChange(val) {
@@ -116,12 +136,13 @@ export default {
 </script>
 
 <style scoped>
-.edit-input {
-  padding-right: 100px;
-}
-.cancel-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-}
+  .edit-input {
+    padding-right: 100px;
+  }
+
+  .cancel-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+  }
 </style>

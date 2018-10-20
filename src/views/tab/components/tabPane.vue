@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/log'
 
 export default {
   filters: {

@@ -17,6 +17,10 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+
   NProgress.start() // start progress bar
   if (getToken()) { // determine if there has token
     /* has token*/
