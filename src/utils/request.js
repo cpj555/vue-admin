@@ -2,23 +2,28 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/store2'
 import qs from 'qs'
-import router from '@/router'
+import store from '@/store'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 5000, // request timeout
   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  // withCredentials: true,
   transformRequest: [
     function(data) {
-      data = qs.stringify(data)
+      if (!(data instanceof FormData)) {
+        data = qs.stringify(data)
+      }
       return data
     }
+
   ]
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
+    console.log(config)
     if (getToken()) {
       config.headers['Access-Token'] = getToken()
     }
@@ -42,8 +47,9 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       if (res.code === 2004) {
-        console.log(1234)
-        router.replace('/')
+        store.dispatch('FedLogOut').then(() => {
+          location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+        })
         // this.$router.push('/');
       }
       return Promise.reject('error')

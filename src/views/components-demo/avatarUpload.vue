@@ -1,6 +1,7 @@
 <template>
   <div class="components-container">
-    <imgInputer v-model="file" accept="image/*" no-mask img-src="http://7xntdk.com1.z0.glb.clouddn.com/12.jpg" @onChange="fileChange"/>
+
+    <img-inputer v-model="file" theme="light" size="large" @onChange="fileChange"/>
     <h1><code>no-mask</code></h1>
 
   </div>
@@ -8,6 +9,7 @@
 
 <script>
 import { getToken } from '@/utils/store2'
+import { upload } from '@/api/upload'
 import ImgInputer from 'vue-img-inputer'
 import 'vue-img-inputer/dist/index.css'
 
@@ -29,8 +31,15 @@ export default {
   },
   methods: {
     fileChange(file, name) {
-      console.log('File --> ', file)
+      const fromdata = new FormData()
+      fromdata.append('media', file)
+      console.log('File --> ', this.file)
       console.log('FileName -->', name)
+      upload(fromdata).then(response => {
+        console.log(response)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     onErr(err, file) {
       console.log('​onErr -> file', file)

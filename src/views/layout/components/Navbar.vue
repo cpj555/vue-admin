@@ -40,8 +40,10 @@
     </div>
 
     <el-dialog :visible.sync="dialogInfoVisible" title="个人信息">
-      <span>账号:{{ name }}</span>
-      <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+      <p>
+        <span>账号:{{ name }}</span>
+      </p>
+      <span>头像:</span><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
     </el-dialog>
 
   </div>
