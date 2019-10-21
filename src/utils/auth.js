@@ -1,15 +1,17 @@
-import Cookies from 'js-cookie'
+import store2 from 'store2'
 
 const TokenKey = 'Access-Token'
+const RefreshTokenKey = 'refresh_token'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return store2.session.get(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return store2.session.set(TokenKey, token)
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  store2.session.remove(RefreshTokenKey)
+  return store2.session.remove(TokenKey)
 }

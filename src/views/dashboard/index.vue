@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole"/>
+    <component :is="currentRole" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
+import adminDashboard from './admin/index'
+import editorDashboard from './editor/index'
 
 export default {
   name: 'Dashboard',
