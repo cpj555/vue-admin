@@ -35,12 +35,6 @@
           <router-link to="/">
             <el-dropdown-item>Dashboard</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
@@ -81,9 +75,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      console.log(this.$route)
-      console.log(this.$route.fullPath)
-      this.$router.push(`/passport?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/passport?redirect=dashboard`)
     }
   }
 }

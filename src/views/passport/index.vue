@@ -50,7 +50,6 @@
 </template>
 
 <script>
-// import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Passport',
@@ -121,9 +120,8 @@ export default {
       this.loading = true
       // 1
       this.$store.dispatch('user/auth', this.loginForm).then(() => {
-        console.log(1)
-        console.log(this.redirect)
-        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        this.$router.replace(this.redirect)
+        // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
         this.loading = false
       }).catch(() => {
         this.loading = false

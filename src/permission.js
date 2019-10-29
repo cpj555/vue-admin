@@ -1,6 +1,5 @@
 import router from './router/index'
 import store from './store/index'
-import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
@@ -22,36 +21,17 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     if (to.path === '/passport') {
-      // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
+      const permission_routes = store.getters.permission_routes && store.getters.permission_routes.length > 0
+      if (permission_routes) {
         next()
       } else {
-        try {
-          // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
-
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes)
-
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
-        } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/passport?redirect=${to.path}`)
-          NProgress.done()
-        }
+        // 第一次初始化路由和f5刷新页面时根据vuex中的permission_routes为空重新加载路由
+        const accessRoutes = await store.dispatch('permission/generateRoutes', store.getters.roles)
+        router.addRoutes(accessRoutes)
+        next({ ...to, replace: true })
       }
     }
   } else {

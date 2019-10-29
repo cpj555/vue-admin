@@ -2,8 +2,9 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { SUCCESS, ERROR_AUTH_FAILED, ERROR_REFRESH_TOKEN } from '@/utils/Constants/Code'
+import { SUCCESS, ERROR_AUTH_FAILED, ERROR_REFRESH_TOKEN, POOR_ROLES } from '@/utils/Constants/Code'
 import store2 from 'store2'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -15,24 +16,17 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // do something before request is sent
-    console.log(store.getters.token)
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
       config.headers['Access-Token'] = getToken()
     }
     return config
   },
   error => {
-    // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
 let isRefreshing = false
-// response interceptor
+
 service.interceptors.response.use(
   response => {
     const res = response.data
@@ -45,6 +39,14 @@ service.interceptors.response.use(
       return res
     } else {
       switch (res.code) {
+        case POOR_ROLES:
+          Message({
+            message: res.message || 'Error',
+            type: 'error',
+            duration: 5 * 1000
+          })
+          router.push('/')
+          break
         case ERROR_REFRESH_TOKEN:
           if (!isRefreshing) {
             isRefreshing = true
@@ -81,7 +83,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

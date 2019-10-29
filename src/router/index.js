@@ -11,6 +11,7 @@ import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
+import basicInformation from './modules/basicInformation'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -91,7 +92,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: { title: 'Documentation', icon: 'documentation', affix: false }
       }
     ]
   },
@@ -129,6 +130,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  basicInformation,
   {
     path: '/permission',
     component: Layout,
@@ -138,7 +140,7 @@ export const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['/member/list'] // you can set roles in root nav
     },
     children: [
       {
@@ -395,6 +397,7 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
+// store.g
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()

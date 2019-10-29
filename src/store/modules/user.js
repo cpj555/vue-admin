@@ -1,8 +1,8 @@
 import { auth, refresh } from '@/api/Passport/auth'
 import { logout, getInfo } from '@/api/user'
-import router, { resetRouter } from '@/router'
 import { setToken, getToken } from '@/utils/auth'
 import store2 from 'store2'
+import router, { resetRouter } from '@/router/index'
 
 const state = {
   token: getToken(),
@@ -51,7 +51,7 @@ const actions = {
         store2.session.set('roles', response.data.roles)
         store2.session.set('menu', response.data.menu)
         store2.session.set('info', response.data.user_info)
-        resolve()
+        resolve(response.data.roles)
       }).catch(error => {
         reject(error)
       })
