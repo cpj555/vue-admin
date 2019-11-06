@@ -18,10 +18,10 @@ const basicInformation = {
       meta: { title: '会员资料', icon: 'basic_people', roles: ['/dashboard/member/list'] }
     },
     {
-      path: 'member2',
-      component: () => import('@/views/member/list'),
-      name: 'memberList',
-      meta: { title: 'xxx', noCache: true, roles: ['/dashboard/member/list'] }
+      path: 'hydepartment',
+      component: () => import('@/views/hydepartment/list'),
+      name: 'hyDepartmentList',
+      meta: { title: 'hyDepartmentList', noCache: true, roles: ['/dashboard/hy/department/list'] }
     }
   ]
 }
